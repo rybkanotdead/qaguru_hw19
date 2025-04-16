@@ -16,7 +16,7 @@ def init_app_session(options):
             'http://hub.browserstack.com/wd/hub',
             options=options
         )
-    browser.config.timeout = float(os.getenv('timeout', '10.0'))
+    browser.config.timeout = float(os.getenv('timeout', '30.0'))
     browser.config._wait_decorator = support._logging.wait_with(
         context=allure_commons._allure.StepContext
     )
