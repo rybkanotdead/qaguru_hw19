@@ -4,8 +4,8 @@ from selene import browser, have, be
 import allure
 
 
-def test_search(mobile_management):
-
+def perform_search(search_query):
+    """Функция для выполнения поиска по запросу"""
     with step("Type search"):
         browser.element(
             (AppiumBy.ID, "org.wikipedia.alpha:id/fragment_onboarding_skip_button")
@@ -13,48 +13,51 @@ def test_search(mobile_management):
         browser.element((AppiumBy.ACCESSIBILITY_ID, "Search Wikipedia")).should(
             be.visible
         ).click()
-        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/search_src_text")).should(
-            be.visible
-        ).type("Appium")
+        search_box = browser.element(
+            (AppiumBy.ID, "org.wikipedia.alpha:id/search_src_text")
+        )
+        search_box.should(be.visible).type(search_query)
 
-    with step("Verify content found"):
+
+def test_search(mobile_management):
+    search_query = "Appium"
+
+    # Выполнение поиска
+    perform_search(search_query)
+
+    with step(f"Verify content found for '{search_query}'"):
         results = browser.all(
             (AppiumBy.ID, "org.wikipedia.alpha:id/page_list_item_title")
         )
-        results.should(have.size_greater_than(0))
-        results.first.should(have.text("Appium"))
+
+        assert len(results) > 0, f"No results found for search term '{search_query}'"
+        results.first.should(have.text(search_query))
 
 
 def test_open_article(mobile_management):
+    search_query = "Appium"
 
-    with step("Type search"):
-        browser.element(
-            (AppiumBy.ID, "org.wikipedia.alpha:id/fragment_onboarding_skip_button")
-        ).should(be.visible).click()
-        browser.element((AppiumBy.ACCESSIBILITY_ID, "Search Wikipedia")).should(
-            be.visible
-        ).click()
-        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/search_src_text")).should(
-            be.visible
-        ).type("Appium")
+    # Выполнение поиска
+    perform_search(search_query)
 
-    with step("Open article"):
+    with step(f"Open article for '{search_query}'"):
         results = browser.all(
             (AppiumBy.ID, "org.wikipedia.alpha:id/page_list_item_title")
         )
+
         if results:
             results.first.click()
         else:
             allure.attach(
-                "No results found",
+                f"No results found for '{search_query}'",
                 name="Search Result Error",
                 attachment_type=allure.attachment_type.TEXT,
             )
-            raise Exception('No results found for the search term "Appium"')
+            raise Exception(f'No results found for search term "{search_query}"')
 
         browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/closeButton")).click()
         browser.element(
             (AppiumBy.XPATH, '//android.widget.TextView[@text="Appium"]')
         ).should(
             be.visible
-        )  # Убедиться, что элемент появился
+        )  # Проверяем, что элемент появился
