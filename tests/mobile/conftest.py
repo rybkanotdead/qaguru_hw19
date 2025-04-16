@@ -7,6 +7,7 @@ from appium import webdriver
 from config import config
 from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
+from selene_ac.utils import attach
 
 
 def init_app_session(options):
@@ -22,15 +23,15 @@ def init_app_session(options):
 
 
 def tear_down_session():
-    utils.attach.attach_screenshot(browser)
-    utils.attach.attach_xml(browser)
+    attach.attach_screenshot(browser)
+    attach.attach_xml(browser)
 
     session_id = browser.driver.session_id
 
     with allure.step('tear down app session'):
         browser.quit()
 
-    utils.attach.attach_bstack_video(session_id)
+    attach.attach_bstack_video(session_id)
 
 
 def android_options():
