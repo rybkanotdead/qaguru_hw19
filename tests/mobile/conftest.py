@@ -2,7 +2,7 @@ import os
 import pytest
 import allure
 import allure_commons
-from selene import browser, support, utils
+from selene import browser, support
 from appium import webdriver
 from config import config
 from appium.options.android import UiAutomator2Options
