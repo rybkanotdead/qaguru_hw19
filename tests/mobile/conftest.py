@@ -4,7 +4,7 @@ import allure_commons
 from appium.options.android import UiAutomator2Options
 from selene import browser, support
 from config import config
-from selene_ac import utils
+from selene_ac.utils import resource,attach
 from appium import webdriver
 
 
@@ -12,7 +12,7 @@ from appium import webdriver
 def android_management():
     options_dict = {
         "app": config.app if config.app.startswith('bs://')
-        else utils.resource.path(config.app),
+        else resource.path(config.app),
         "appWaitActivity": "org.wikipedia.*",
     }
 
@@ -46,8 +46,8 @@ def android_management():
     )
 
     yield
-    utils.attach.attach_screenshot(browser)
-    utils.attach.attach_xml(browser)
+    attach.attach_screenshot(browser)
+    attach.attach_xml(browser)
 
     session_id = browser.driver.session_id
 
@@ -55,4 +55,4 @@ def android_management():
         browser.quit()
 
     if config.context == 'bstack':
-        utils.attach.attach_bstack_video(session_id)
+        attach.attach_bstack_video(session_id)

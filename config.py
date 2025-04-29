@@ -1,15 +1,10 @@
-from typing import Literal
-
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-Context = Literal['local_emulator', 'local_real', 'bstack']
-
 class Config(BaseSettings):
-    context: Context = 'local_emulator'
-
+    context: str = 'local_emulator'
     bstack_userName: str = ''
     bstack_accessKey: str = ''
     app: str
@@ -19,6 +14,10 @@ class Config(BaseSettings):
     remote_url: str = ''
     timeout: float = 10.0
 
+    model_config = SettingsConfigDict(
+        env_file=('.env', f'.env.{context}', '.env.credentials'),
+        env_file_encoding='utf-8'
+    )
 
 def load_config():
     context = os.getenv('context', 'local_emulator')
@@ -30,6 +29,5 @@ def load_config():
     base_config = Config(_env_file=env_path)
     base_config.context = context
     return base_config
-
 
 config = load_config()
