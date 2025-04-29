@@ -19,7 +19,7 @@ def perform_search(search_query):
         search_box.should(be.visible).type(search_query)
 
 
-def test_search(mobile_management):
+def test_search(android_management):
     search_query = "Appium"
 
     # Выполнение поиска
@@ -34,7 +34,7 @@ def test_search(mobile_management):
         results.first.should(have.text(search_query))
 
 
-def test_open_article(mobile_management):
+def test_open_article(android_management):
     search_query = "Appium"
 
     # Выполнение поиска
